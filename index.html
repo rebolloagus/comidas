@@ -246,7 +246,7 @@ const MER_A='Leche descremada con cocoa + 2 fetas de pan lactal con 2 fetas de j
 const MER_B='Leche descremada con cocoa + 3 galletas de arroz con mermelada + 1 banana. Comela 1 a 1,5 h antes de correr.';
 const DIAS={
   1:{dow:'Lunes',
-    alm:['Arroz (80 g en crudo) + 1 lata de atún al natural + 1 huevo duro + tomate y zanahoria rallada + 1 cucharadita de aceite.','🥡 Lo armaste el domingo'],
+    alm:['Arroz (80 g en crudo) + 1 lata de atún al natural + 1 huevo duro + 1 cucharadita de aceite.','🥡 Lo armaste el domingo'],
     cena:{t:'Milanesas de pollo al horno (180 g en crudo por porción) + papas al horno en cubos (250 g por porción, con 1 cucharadita de aceite y pimentón) + ensalada. Todo en la misma bandeja.',doble:'martes',
       rec:'Pechuga en fetas finas, pasala por huevo batido y pan rallado. Horno fuerte (200 °C) 20–25 min, dándolas vuelta a la mitad. Las papas van en la misma bandeja.'}},
   2:{dow:'Martes',run:true,
@@ -278,7 +278,7 @@ function mealsFor(w){
 const PREP=[
   ['Cociná 80 g de arroz (en crudo)',''],
   ['Herví 5 huevos','1 va al tupper del lunes y 4 a los desayunos del martes y el jueves'],
-  ['Armá el tupper del lunes','Arroz + 1 lata de atún + 1 huevo duro + tomate y zanahoria rallada + 1 cucharadita de aceite'],
+  ['Armá el tupper del lunes','Arroz + 1 lata de atún + 1 huevo duro + 1 cucharadita de aceite'],
   ['Fijate la lista de compras','En la pestaña Compras']
 ];
 const FINDE=[
@@ -315,9 +315,7 @@ const COMPRAS=[
     ['Fruta para la media mañana','5 (manzana, mandarina, pera…)'],
     ['Papas','600 g'],
     ['Boniatos','600 g'],
-    ['Lechuga','1'],
-    ['Tomates','4'],
-    ['Zanahorias','3']]]
+    ['Lechuga (o la verdura que te guste)','para la ensalada']]]
 ];
 const ZONA=[69,71];
 
@@ -395,6 +393,7 @@ function renderHoy(){
       +'<div class="meter"><i id="mtr" style="width:'+(100*c.si/c.tot)+'%"></i></div><p class="meterl" id="mtrl">'+c.si+' de '+c.tot+' comidas cumplidas</p></section>';
     h+='<div class="note"><b>5:30 · Antes del gym.</b> '+PRE+'</div>';
     h+=ms.map(m=>mealCard(m,x.m||{},x.n||{})).join('');
+    h+='<div class="note"><b>La ensalada</b> es lechuga o la verdura que te guste, con 1 cucharadita de aceite. Si no querés verdura, sumá una fruta en el día.</div>';
     h+='<div class="note"><b>Libres todo el día:</b> agua, mate y café sin azúcar, edulcorante.</div>';
     h+=aguaBlock();
   }else{
