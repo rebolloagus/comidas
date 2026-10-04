@@ -1,0 +1,14 @@
+{
+  "name": "Comidas · Agustín",
+  "short_name": "Comidas",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1E5C36",
+  "theme_color": "#1E5C36",
+  "lang": "es-UY",
+  "icons": [
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any" }
+  ]
+}

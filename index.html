@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comidas · Agustín</title>
+<meta name="theme-color" content="#1E5C36">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Comidas">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<link rel="icon" href="icon.png">
+<style>
+/* ============ tokens ============ */
+:root{
+  --bg:#F3F2EC; --card:#FFFFFF; --card2:#F6F6F1; --ink:#1F241D; --ink2:#545E50; --mut:#7A8474;
+  --line:#E3E5DC; --line2:#CFD4C5;
+  --acc:#2E7D46; --acc-ink:#256B3B; --acc-soft:#E5F1E8; --acc-line:#BFDCC8; --on-acc:#FFFFFF;
+  --warn:#B07A14; --warn-ink:#8F5B06; --warn-soft:#F7EDDA; --warn-line:#E3CD9E;
+  --bad:#B4483A; --bad-ink:#A33C2B; --bad-soft:#F8E7E2; --bad-line:#E6C0B6;
+  --blue-ink:#2C5A9A; --blue-soft:#E7EEF8; --blue-line:#C2D3EC;
+  --c1:#2E7D46; --c2:#3468B0; --grid:#E8EAE2;
+  --shadow:0 1px 2px rgba(31,36,29,.05),0 4px 14px rgba(31,36,29,.05);
+  --sb:env(safe-area-inset-bottom,0px); --st:env(safe-area-inset-top,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121511; --card:#1B201A; --card2:#222821; --ink:#E7ECE3; --ink2:#A8B2A1; --mut:#7E8879;
+    --line:#2B322A; --line2:#3A4238;
+    --acc:#3B8653; --acc-ink:#7FC79A; --acc-soft:#1F3126; --acc-line:#33543F; --on-acc:#FFFFFF;
+    --warn:#C08A2E; --warn-ink:#DCA75E; --warn-soft:#322A17; --warn-line:#57451F;
+    --bad:#C2614F; --bad-ink:#E28D79; --bad-soft:#33201B; --bad-line:#5C3328;
+    --blue-ink:#9CB9E2; --blue-soft:#1E2836; --blue-line:#32496C;
+    --c1:#3E9C63; --c2:#4D86D8; --grid:#283027;
+    --shadow:0 1px 2px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121511; --card:#1B201A; --card2:#222821; --ink:#E7ECE3; --ink2:#A8B2A1; --mut:#7E8879;
+  --line:#2B322A; --line2:#3A4238;
+  --acc:#3B8653; --acc-ink:#7FC79A; --acc-soft:#1F3126; --acc-line:#33543F; --on-acc:#FFFFFF;
+  --warn:#C08A2E; --warn-ink:#DCA75E; --warn-soft:#322A17; --warn-line:#57451F;
+  --bad:#C2614F; --bad-ink:#E28D79; --bad-soft:#33201B; --bad-line:#5C3328;
+  --blue-ink:#9CB9E2; --blue-soft:#1E2836; --blue-line:#32496C;
+  --c1:#3E9C63; --c2:#4D86D8; --grid:#283027;
+  --shadow:0 1px 2px rgba(0,0,0,.35);
+}
+
+/* ============ base ============ */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink)}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;font-size:16px;line-height:1.45;-webkit-font-smoothing:antialiased;-webkit-text-size-adjust:100%}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+h1,h2,h3,p{margin:0}
+input,textarea,select{font:inherit;color:var(--ink)}
+.tnum{font-variant-numeric:tabular-nums}
+#app{padding:calc(var(--st) + 12px) 16px calc(var(--sb) + 96px);max-width:560px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.brand{font-size:13px;font-weight:800;letter-spacing:1.4px;text-transform:uppercase;color:var(--acc-ink)}
+.brand i{font-style:normal;color:var(--mut);font-weight:700}
+.savechip{font-size:12px;font-weight:700;color:var(--acc-ink);background:var(--acc-soft);border:1px solid var(--acc-line);border-radius:99px;padding:2px 9px;opacity:0;transition:opacity .25s}
+.savechip.on{opacity:1}
+.datebar{display:flex;align-items:center;gap:8px;margin:4px 0 2px}
+.datebar .nav{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);font-size:20px;font-weight:700;color:var(--ink2);flex:none}
+.datebar h1{flex:1;text-align:center;font-size:20px;font-weight:800;letter-spacing:-.3px}
+.todaybtn{display:block;margin:6px auto 0;font-size:13px;font-weight:700;color:var(--acc-ink);background:var(--acc-soft);border-radius:99px;padding:4px 12px}
+.h1{font-size:24px;font-weight:800;letter-spacing:-.4px;margin:6px 0 12px}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.eyebrow{font-size:12px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--mut);margin-bottom:6px}
+.hero{margin-top:12px}
+.hero h2{font-size:26px;font-weight:800;letter-spacing:-.5px;line-height:1.1}
+.hero .sub{color:var(--ink2);font-weight:600;margin-top:2px}
+.pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:700;border-radius:99px;padding:4px 10px;background:var(--acc-soft);color:var(--acc-ink)}
+.pill.b{background:var(--blue-soft);color:var(--blue-ink)}
+.meter{height:6px;border-radius:99px;background:var(--acc-soft);margin-top:12px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--acc);border-radius:99px;transition:width .3s}
+.meterl{font-size:12.5px;color:var(--ink2);margin-top:6px;font-weight:600}
+.sec{font-size:13px;font-weight:800;letter-spacing:.9px;text-transform:uppercase;color:var(--ink2);margin:18px 2px 8px;display:flex;justify-content:space-between;gap:8px}
+.sec em{font-style:normal;font-weight:700;color:var(--mut);letter-spacing:0;text-transform:none}
+.note{font-size:14px;color:var(--ink2);background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+.note b{color:var(--ink)}
+.hint{font-size:14px;color:var(--ink2);line-height:1.45}
+
+.meal{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px;box-shadow:var(--shadow);position:relative}
+.meal.si{border-color:var(--acc-line)}
+.mh{display:flex;align-items:baseline;gap:10px}
+.mh time{font-size:13px;font-weight:800;color:var(--acc-ink);font-variant-numeric:tabular-nums;flex:none}
+.mh h3{font-size:17px;font-weight:800;letter-spacing:-.2px;flex:1}
+.mst{font-size:12px;font-weight:800;border-radius:99px;padding:2px 8px;flex:none}
+.mst.si{background:var(--acc-soft);color:var(--acc-ink)}
+.mst.parte{background:var(--warn-soft);color:var(--warn-ink)}
+.mst.no{background:var(--bad-soft);color:var(--bad-ink)}
+.tag{display:inline-block;font-size:12.5px;font-weight:700;color:var(--ink2);background:var(--card2);border:1px solid var(--line);border-radius:99px;padding:2px 9px;margin-top:8px}
+.desc{font-size:15px;line-height:1.45;margin-top:8px}
+.doble{margin-top:10px;font-size:14px;font-weight:700;color:var(--blue-ink);background:var(--blue-soft);border:1px solid var(--blue-line);border-radius:10px;padding:8px 11px}
+details.rec{margin-top:8px}
+details.rec summary{font-size:14px;font-weight:700;color:var(--acc-ink);cursor:pointer;list-style:none;padding:4px 0}
+details.rec summary::-webkit-details-marker{display:none}
+details.rec summary::before{content:"▸ ";}
+details.rec[open] summary::before{content:"▾ ";}
+details.rec p{font-size:14px;color:var(--ink2);line-height:1.45;padding:2px 0 2px}
+.stbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:12px}
+.stbtns button{height:42px;border-radius:10px;border:1px solid var(--line2);font-weight:800;font-size:14px;color:var(--ink2);background:var(--card)}
+.stbtns button.on.si{background:var(--acc);border-color:var(--acc);color:#fff}
+.stbtns button.on.parte{background:var(--warn);border-color:var(--warn);color:#fff}
+.stbtns button.on.no{background:var(--bad);border-color:var(--bad);color:#fff}
+.mnote{width:100%;margin-top:8px;height:42px;border-radius:10px;border:1px solid var(--line);background:var(--card2);padding:0 12px;font-size:15px}
+.mnote:focus{outline:none;border-color:var(--acc)}
+.libre{background:var(--warn-soft);border-color:var(--warn-line)}
+.libre .desc{font-weight:600}
+
+.agua{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:10px}
+.agua button{height:52px;border-radius:12px;border:1px solid var(--line2);display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:var(--mut);background:var(--card)}
+.agua svg{width:16px;height:22px;fill:none;stroke:currentColor;stroke-width:2}
+.agua button.on{background:var(--blue-soft);border-color:var(--blue-line);color:var(--blue-ink)}
+.agua button.on svg{fill:currentColor}
+
+.ck{display:flex;gap:12px;align-items:flex-start;width:100%;text-align:left;padding:11px 12px;border-radius:12px;background:var(--card);border:1px solid var(--line);margin-bottom:6px}
+.ck .box{flex:none;width:24px;height:24px;border-radius:7px;border:2px solid var(--line2);margin-top:1px;display:grid;place-items:center}
+.ck.on .box{background:var(--acc);border-color:var(--acc)}
+.ck.on .box::after{content:"";width:6px;height:11px;border:solid #fff;border-width:0 2.5px 2.5px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.ckt{display:flex;flex-direction:column;min-width:0;flex:1}
+.ckt b{font-weight:700;font-size:15.5px}
+.ckt small{font-size:13.5px;color:var(--ink2)}
+.ck.on .ckt b{color:var(--mut);text-decoration:line-through;text-decoration-color:var(--line2)}
+ul.rules{margin:6px 0 0;padding-left:20px}
+ul.rules li{margin:6px 0;font-size:15px;line-height:1.45}
+
+/* semana */
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 10px}
+.tile span{display:block;font-size:12px;color:var(--ink2);font-weight:700;line-height:1.2}
+.tile b{display:block;font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.5px}
+.tile b small{font-size:14px;color:var(--mut);font-weight:700}
+.wstrip{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;text-align:center}
+.wstrip div{font-size:12px;font-weight:700;color:var(--mut)}
+.wstrip b{display:block;margin-top:4px;font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+.wstrip .today b{color:var(--acc-ink)}
+.bar{display:flex;gap:2px;height:8px;margin-top:6px;border-radius:99px;overflow:hidden;background:var(--card2)}
+.bar i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2);margin-top:10px;font-weight:600}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:8px;border-radius:2px;display:inline-block}
+details.day{background:var(--card);border:1px solid var(--line);border-radius:14px;margin-bottom:8px;overflow:hidden}
+details.day summary{padding:13px 14px;font-weight:800;font-size:16px;cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:8px}
+details.day summary::-webkit-details-marker{display:none}
+details.day summary span{font-weight:600;color:var(--mut);font-size:13.5px}
+details.day .in{padding:0 14px 12px}
+.row{padding:9px 0;border-top:1px solid var(--line)}
+.row b{font-size:13px;color:var(--acc-ink);font-variant-numeric:tabular-nums}
+.row p{font-size:14.5px;margin-top:2px}
+.row small{display:block;font-size:13px;color:var(--blue-ink);font-weight:700;margin-top:3px}
+table.tt{width:100%;border-collapse:collapse;font-size:14.5px}
+table.tt td{padding:7px 4px;border-bottom:1px solid var(--line)}
+table.tt td:first-child{font-weight:800;color:var(--acc-ink);width:64px;font-variant-numeric:tabular-nums}
+
+/* compras */
+.cgrp{font-size:12.5px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--mut);margin:16px 2px 6px}
+.btn2{flex:1;height:46px;border-radius:12px;background:var(--acc-soft);color:var(--acc-ink);font-weight:800;border:1px solid var(--acc-line)}
+.btnrow{display:flex;gap:8px;margin-top:10px}
+
+/* peso */
+.form{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.form label{display:flex;flex-direction:column;gap:4px;font-size:12.5px;font-weight:800;color:var(--ink2)}
+.form input{height:46px;border-radius:12px;border:1px solid var(--line);background:var(--card2);padding:0 12px;font-size:17px;font-weight:700;font-variant-numeric:tabular-nums;width:100%;min-width:0}
+.form input:focus{outline:none;border-color:var(--acc)}
+.form .full{grid-column:1/-1}
+.bigbtn{display:block;width:100%;height:50px;border-radius:14px;background:var(--acc);color:var(--on-acc);font-weight:800;font-size:16px;margin-top:10px}
+.adv{margin-top:12px;font-size:14.5px;border-radius:12px;padding:10px 12px;font-weight:600;line-height:1.4}
+.adv.g{background:var(--acc-soft);color:var(--acc-ink);border:1px solid var(--acc-line)}
+.adv.y{background:var(--warn-soft);color:var(--warn-ink);border:1px solid var(--warn-line)}
+.adv.r{background:var(--bad-soft);color:var(--bad-ink);border:1px solid var(--bad-line)}
+.adv.n{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
+.chart{position:relative;margin-top:10px;min-height:60px}
+.chart svg{display:block;width:100%;overflow:visible;touch-action:pan-y}
+.chart svg:focus{outline:none}
+.chart svg:focus-visible{outline:2px solid var(--acc);outline-offset:4px;border-radius:6px}
+.ch-grid{stroke:var(--grid);stroke-width:1;shape-rendering:crispEdges}
+.ch-tick{fill:var(--mut);font-size:11px;font-weight:600;font-variant-numeric:tabular-nums}
+.ch-band{fill:var(--c);opacity:.10}
+.ch-bandl{fill:var(--ink2);font-size:11px;font-weight:700}
+.ch-line{fill:none;stroke:var(--c);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.ch-dot{fill:var(--c);stroke:var(--card);stroke-width:2}
+.ch-end{fill:var(--ink);font-size:12px;font-weight:800;font-variant-numeric:tabular-nums}
+.ch-x{stroke:var(--ink2);stroke-width:1;opacity:.5}
+.tip{position:absolute;top:0;pointer-events:none;background:var(--card);border:1px solid var(--line2);border-radius:10px;padding:7px 10px;box-shadow:var(--shadow);font-size:12.5px;white-space:nowrap;opacity:0;transition:opacity .12s;z-index:2}
+.tip.on{opacity:1}
+.tip b{display:block;font-size:15px;font-weight:800;color:var(--ink)}
+.tip span{color:var(--ink2);font-weight:600}
+.tip .k{display:inline-block;width:12px;height:2px;background:var(--c);vertical-align:middle;margin-right:6px;border-radius:2px}
+.empty{font-size:14px;color:var(--mut);padding:8px 0}
+.hist{width:100%;border-collapse:collapse;font-size:14px;margin-top:6px}
+.hist th{text-align:left;font-size:11.5px;color:var(--mut);font-weight:800;text-transform:uppercase;letter-spacing:.6px;padding:6px 4px;border-bottom:1px solid var(--line)}
+.hist td{padding:8px 4px;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.hist td:last-child{text-align:right;width:40px}
+.del{width:32px;height:32px;border-radius:8px;color:var(--mut);font-weight:800}
+
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);padding:6px 8px calc(var(--sb) + 6px);display:flex;justify-content:center;z-index:30}
+nav.tabs .in{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;width:100%;max-width:560px}
+nav.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0;border-radius:12px;font-size:11.5px;font-weight:700;color:var(--mut)}
+nav.tabs svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs button.on{color:var(--acc-ink);background:var(--acc-soft)}
+.toast{position:fixed;left:50%;top:calc(var(--st) + 14px);transform:translate(-50%,-140%);background:var(--ink);color:var(--bg);font-weight:700;font-size:14px;padding:10px 16px;border-radius:12px;z-index:50;transition:transform .25s;max-width:calc(100% - 32px);text-align:center}
+.toast{opacity:0;visibility:hidden}
+.toast.on{transform:translate(-50%,0);opacity:1;visibility:visible}
+.view{animation:fade .16s ease}
+@keyframes fade{from{opacity:0;transform:translateY(3px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.view{animation:none}.toast,.meter i{transition:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <div class="brand">Comidas <i>· Agustín</i></div>
+    <span class="savechip" id="chip">guardado ✓</span>
+  </div>
+  <main id="view" class="view"></main>
+</div>
+<nav class="tabs" aria-label="Secciones">
+  <div class="in">
+    <button data-act="tab" data-t="hoy"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/></svg>Hoy</button>
+    <button data-act="tab" data-t="semana"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Semana</button>
+    <button data-act="tab" data-t="compras"><svg viewBox="0 0 24 24"><path d="M5 8h14l-1.5 11h-11z"/><path d="M9 8a3 3 0 0 1 6 0"/></svg>Compras</button>
+    <button data-act="tab" data-t="peso"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 15l4-4 3 3 5-6"/></svg>Peso</button>
+  </div>
+</nav>
+<div class="toast" id="toast" role="status"></div>
+<input type="file" id="imp" accept="application/json,.json" hidden>
+
+<script>
+"use strict";
+if(location.hash==='#dark') document.documentElement.dataset.theme='dark';
+if(location.hash==='#light') document.documentElement.dataset.theme='light';
+
+/* ================= PLAN ================= */
+const START='2026-10-05', FIN='2026-12-31';
+const PRE='Café solo o con un chorrito de leche. Si entrenando en ayunas te sentís flojo, comé ½ banana.';
+const DES_A='Sándwich de 2 fetas de pan lactal con 2 huevos revueltos al microondas (1 min, revolvés a los 30 s), 2 fetas de jamón y 1 de queso. Con leche descremada con cocoa (250 ml + 7 g de cocoa + 5 g de azúcar).';
+const DES_B='Licuado: 250 ml de leche descremada + 1 banana + 1 cucharadita de cocoa (1 min en la licuadora). Con 2 fetas de pan lactal con queso untable light y mermelada, y 2 huevos duros de los que herviste el domingo.';
+const MM='1 fruta + 1 yogur descremado.';
+const MER_A='Leche descremada con cocoa + 2 fetas de pan lactal con 2 fetas de jamón y queso untable light.';
+const MER_B='Leche descremada con cocoa + 3 galletas de arroz con mermelada + 1 banana. Comela 1 a 1,5 h antes de correr.';
+const DIAS={
+  1:{dow:'Lunes',
+    alm:['Arroz (80 g en crudo) + 1 lata de atún al natural + 1 huevo duro + tomate y zanahoria rallada + 1 cucharadita de aceite.','🥡 Lo armaste el domingo'],
+    cena:{t:'Milanesas de pollo al horno (180 g en crudo por porción) + papas al horno en cubos (250 g por porción, con 1 cucharadita de aceite y pimentón) + ensalada. Todo en la misma bandeja.',doble:'martes',
+      rec:'Pechuga en fetas finas, pasala por huevo batido y pan rallado. Horno fuerte (200 °C) 20–25 min, dándolas vuelta a la mitad. Las papas van en la misma bandeja.'}},
+  2:{dow:'Martes',run:true,
+    alm:['Milanesa de pollo + papas al horno + ensalada.','🥡 De la cena del lunes'],
+    cena:{t:'Hamburguesas caseras: comés 2 y guardás 2. Con 70 g de arroz en crudo por porción (cociná 140 g), o 1 pan de hamburguesa por hamburguesa en vez del arroz. Más ensalada.',doble:'miércoles',
+      rec:'400 g de carne picada magra + 30 g de pan rallado + 1 huevo + sal, pimienta y orégano. Salen 4 iguales (unos 110 g cada una). A la plancha o al horno, sin aceite extra.'}},
+  3:{dow:'Miércoles',
+    alm:['2 hamburguesas caseras + arroz (o pan) + ensalada.','🥡 De la cena del martes'],
+    cena:{t:'Nuggets caseros de pollo al horno (200 g de pechuga en crudo por porción) + boniato al horno (250 g por porción).',doble:'jueves',
+      rec:'Pechuga en cubos, por huevo batido y pan rallado (con pimentón y ajo en polvo si querés). Horno a 200 °C unos 20 min, dándolos vuelta. Son como los nuggets que te gustan, pero con mucha más proteína.'}},
+  4:{dow:'Jueves',run:true,
+    alm:['Nuggets caseros + boniato al horno.','🥡 De la cena del miércoles'],
+    cena:{t:'Fideos con boloñesa magra: 80 g de fideos en crudo + 120 g de carne picada por porción, salsa de tomate y 10 g de queso rallado (cociná 160 g de fideos y 240 g de carne).',doble:'viernes',
+      rec:'Dorá la carne picada sin aceite, sumá la salsa de tomate y dejala 10 min a fuego bajo. Los fideos, aparte. El queso guardalo aparte para el tupper.'}},
+  5:{dow:'Viernes',
+    alm:['Fideos con boloñesa.','🥡 De la cena del jueves'],
+    cena:{libre:true,t:'Cena libre. Disfrutala: es una comida, no el arranque de un finde libre.'}}
+};
+function mealsFor(w){
+  const d=DIAS[w],run=!!d.run;
+  return [
+    {id:'des',t:'7:50',name:'Desayuno',desc:run?DES_B:DES_A,tag:'⏱ Rápido, después de la ducha'},
+    {id:'mm',t:'10:30',name:'Media mañana',desc:MM},
+    {id:'alm',t:'12:30',name:'Almuerzo',desc:d.alm[0],tag:d.alm[1]},
+    {id:'mer',t:'17:00',name:'Merienda',desc:run?MER_B:MER_A,tag:run?'🏃 Hoy corrés después':null},
+    {id:'cena',t:'20:30',name:'Cena',desc:d.cena.t,doble:d.cena.doble,rec:d.cena.rec,libre:!!d.cena.libre}
+  ];
+}
+const PREP=[
+  ['Cociná 80 g de arroz (en crudo)',''],
+  ['Herví 5 huevos','1 va al tupper del lunes y 4 a los desayunos del martes y el jueves'],
+  ['Armá el tupper del lunes','Arroz + 1 lata de atún + 1 huevo duro + tomate y zanahoria rallada + 1 cucharadita de aceite'],
+  ['Fijate la lista de compras','En la pestaña Compras']
+];
+const FINDE=[
+  '<b>La cena del viernes es una comida libre, no el arranque de un finde libre.</b>',
+  'Sábado y domingo comé normal, con proteína en cada comida, y como mucho 1 comida libre más.',
+  'El alcohol es donde más se pierde: 4 cervezas o fernets son unas 600–800 kcal.',
+  'Caminá: tu domingo promedio son 5.000 pasos, apuntá a 8.000.'
+];
+const COMPRAS=[
+  ['Carnes y huevos',[
+    ['Pechuga de pollo','800 g (milanesas y nuggets)'],
+    ['Carne picada magra','650 g (hamburguesas y boloñesa)'],
+    ['Huevos','15 (una docena y media)'],
+    ['Atún al natural','1 lata'],
+    ['Jamón en fetas','250 g'],
+    ['Queso en fetas','100 g']]],
+  ['Lácteos',[
+    ['Leche descremada','3 L'],
+    ['Yogur descremado','5 unidades'],
+    ['Queso untable light','1 pote'],
+    ['Queso rallado','1 sobre chico']]],
+  ['Almacén',[
+    ['Pan lactal','1 paquete grande'],
+    ['Galletas de arroz','1 paquete'],
+    ['Pan rallado','1 paquete'],
+    ['Arroz','si no te queda (usás 220 g)'],
+    ['Fideos','si no te quedan (usás 160 g)'],
+    ['Salsa de tomate','1 caja'],
+    ['Cocoa y azúcar','si se terminan'],
+    ['Mermelada','1 frasco, si se termina'],
+    ['Pan de hamburguesa','4, opcional (en vez del arroz del martes)']]],
+  ['Frutas y verduras',[
+    ['Bananas','5–6'],
+    ['Fruta para la media mañana','5 (manzana, mandarina, pera…)'],
+    ['Papas','600 g'],
+    ['Boniatos','600 g'],
+    ['Lechuga','1'],
+    ['Tomates','4'],
+    ['Zanahorias','3']]]
+];
+const ZONA=[69,71];
+
+/* ================= utilidades ================= */
+const $=s=>document.querySelector(s);
+const DOWF=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+const DOWS=['dom','lun','mar','mié','jue','vie','sáb'];
+const MES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+function fmtD(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function pD(s){const p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);}
+function todayStr(){return fmtD(new Date());}
+function addDays(s,n){const d=pD(s);d.setDate(d.getDate()+n);return fmtD(d);}
+function mondayOf(s){const d=pD(s);d.setDate(d.getDate()-((d.getDay()+6)%7));return fmtD(d);}
+function shortD(s){const d=pD(s);return DOWS[d.getDay()]+' '+d.getDate()+'/'+(d.getMonth()+1);}
+function longD(s){const d=pD(s);return DOWF[d.getDay()]+' '+d.getDate()+' de '+MES[d.getMonth()];}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function num(v){if(v==null)return null;const s=String(v).trim().replace(',','.');if(s==='')return null;const n=parseFloat(s);return isFinite(n)?n:null;}
+function fmtN(n,dec){if(n==null)return '—';const f=Math.pow(10,dec==null?1:dec),r=Math.round(n*f)/f;return Number.isInteger(r)?String(r):r.toFixed(dec==null?1:dec).replace('.',',');}
+function dayNum(s){return Math.round((pD(s)-pD('2000-01-01'))/864e5);}
+
+/* ================= estado ================= */
+const KEY='comidas_agustin_v1';
+let S={};
+try{S=JSON.parse(localStorage.getItem(KEY))||{};}catch(e){S={};}
+function norm(){S.dias=S.dias||{};S.peso=S.peso||[];S.compras=S.compras||{};}
+norm();
+let chipT=null,saveT=null;
+function save(){
+  try{S._t=Date.now();localStorage.setItem(KEY,JSON.stringify(S));
+    const c=$('#chip');c.classList.add('on');clearTimeout(chipT);chipT=setTimeout(()=>c.classList.remove('on'),1400);
+  }catch(e){toast('⚠ No se pudo guardar en este navegador');}
+}
+function saveSoon(){clearTimeout(saveT);saveT=setTimeout(save,400);}
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(()=>{});}catch(e){}
+if(!S._first){S._first=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+let toastT=null;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('on'),2200);}
+function day(d){if(!S.dias[d])S.dias[d]={m:{},n:{},agua:0,prep:{}};const x=S.dias[d];x.m=x.m||{};x.n=x.n||{};x.prep=x.prep||{};return x;}
+function wd(d){return pD(d).getDay();}
+function counts(d){const w=wd(d);let si=0,pa=0,no=0,tot=0;if(w<1||w>5)return {si,pa,no,tot};const r=(S.dias[d]||{}).m||{};
+  mealsFor(w).forEach(m=>{if(m.libre)return;tot++;if(r[m.id]==='si')si++;else if(r[m.id]==='parte')pa++;else if(r[m.id]==='no')no++;});return {si,pa,no,tot};}
+
+/* ================= vistas ================= */
+let sel=todayStr(),tab='hoy';
+function dateBar(){
+  return '<div class="datebar"><button class="nav" data-act="prev" aria-label="Día anterior">‹</button><h1>'+longD(sel)+'</h1><button class="nav" data-act="next" aria-label="Día siguiente">›</button></div>'
+    +(sel===todayStr()?'':'<button class="todaybtn" data-act="today">Volver a hoy</button>');
+}
+const DROP='<svg viewBox="0 0 16 22" aria-hidden="true"><path d="M8 1.5C5 6.5 2 10 2 14a6 6 0 0 0 12 0c0-4-3-7.5-6-12.5z"/></svg>';
+function aguaBlock(){
+  const a=(S.dias[sel]||{}).agua||0;
+  return '<div class="sec">Agua <em id="aguaL">'+fmtN(a/2)+' de 3 L</em></div><div class="card" style="padding:12px 14px"><p class="hint">Cada gota es una botellita de 500 ml. Los días que corrés o tenés laburo pesado, tomá un poco más.</p><div class="agua" role="group" aria-label="Botellas de agua">'
+    +[1,2,3,4,5,6].map(i=>'<button data-act="agua" data-n="'+i+'" class="'+(i<=a?'on':'')+'" aria-label="'+i+' botellas" aria-pressed="'+(i<=a)+'">'+DROP+fmtN(i/2)+' L</button>').join('')+'</div></div>';
+}
+function mealCard(m,r,n){
+  const st=r[m.id];
+  if(m.libre)return '<article class="meal libre"><div class="mh"><time>'+m.t+'</time><h3>🍕 '+m.name+' libre</h3></div><p class="desc">'+m.desc+'</p></article>';
+  return '<article class="meal'+(st==='si'?' si':'')+'" data-m="'+m.id+'"><div class="mh"><time>'+m.t+'</time><h3>'+m.name+'</h3>'+(st?'<span class="mst '+st+'">'+({si:'✓ Todo',parte:'~ Parte',no:'✗ No'})[st]+'</span>':'')+'</div>'
+    +(m.tag?'<span class="tag">'+m.tag+'</span>':'')
+    +'<p class="desc">'+m.desc+'</p>'
+    +(m.doble?'<p class="doble">🍳 Cociná el doble: la mitad va al tupper del '+m.doble+'.</p>':'')
+    +(m.rec?'<details class="rec"><summary>Cómo se hace</summary><p>'+m.rec+'</p></details>':'')
+    +'<div class="stbtns" role="group" aria-label="¿Cómo te fue con '+m.name+'?">'
+    +[['si','✓ Todo'],['parte','~ Parte'],['no','✗ No']].map(([k,l])=>'<button data-act="st" data-k="'+k+'" class="'+k+(st===k?' on':'')+'" aria-pressed="'+(st===k)+'">'+l+'</button>').join('')+'</div>'
+    +((st==='parte'||st==='no')?'<input class="mnote" data-m="'+m.id+'" placeholder="¿Qué comiste en vez? (opcional)" value="'+esc(n[m.id]||'')+'">':'')
+    +'</article>';
+}
+function renderHoy(){
+  const w=wd(sel),x=S.dias[sel]||{m:{},n:{},prep:{}};
+  let h=dateBar();
+  if(w>=1&&w<=5){
+    const D=DIAS[w],ms=mealsFor(w),c=counts(sel);
+    h+='<section class="card hero"><div class="eyebrow">Plan del día</div><h2>'+D.dow+'</h2><p class="sub">'+(w===5?'Hasta la merienda. Después, cena libre.':'Cociná el doble a la noche: es el tupper de mañana.')+'</p>'
+      +'<div class="pills">'+(D.run?'<span class="pill b">🏃 Día de correr</span>':'')+'<span class="pill">≈ 2.200–2.300 kcal · 140–155 g de proteína</span></div>'
+      +'<div class="meter"><i id="mtr" style="width:'+(100*c.si/c.tot)+'%"></i></div><p class="meterl" id="mtrl">'+c.si+' de '+c.tot+' comidas cumplidas</p></section>';
+    h+='<div class="note"><b>5:30 · Antes del gym.</b> '+PRE+'</div>';
+    h+=ms.map(m=>mealCard(m,x.m||{},x.n||{})).join('');
+    h+='<div class="note"><b>Libres todo el día:</b> agua, mate y café sin azúcar, edulcorante.</div>';
+    h+=aguaBlock();
+  }else{
+    const dom=w===0;
+    h+='<section class="card hero"><div class="eyebrow">Fin de semana</div><h2>'+(dom?'Domingo':'Sábado')+'</h2><p class="sub">'+(dom?'De noche preparás lo del lunes (20 min).':'Comé normal y sin desbande.')+'</p></section>';
+    if(dom){h+='<div class="sec">Domingo de noche <em>para el lunes</em></div>'+PREP.map((it,i)=>'<button class="ck'+(x.prep&&x.prep[i]?' on':'')+'" data-act="prep" data-i="'+i+'" aria-pressed="'+!!(x.prep&&x.prep[i])+'"><span class="box" aria-hidden="true"></span><span class="ckt"><b>'+it[0]+'</b>'+(it[1]?'<small>'+it[1]+'</small>':'')+'</span></button>').join('');}
+    h+='<div class="sec">Reglas del finde</div><section class="card"><ul class="rules">'+FINDE.map(r=>'<li>'+r+'</li>').join('')+'</ul></section>';
+    if(!dom)h+='<div class="note">Mañana domingo de noche: arroz, 5 huevos duros y el tupper del lunes. Y si te falta algo, la lista está en <b>Compras</b>.</div>';
+    h+=aguaBlock();
+  }
+  return h;
+}
+function renderSemana(){
+  const t=todayStr(),mon=mondayOf(t);let si=0,pa=0,no=0,tot=0,strip='';
+  for(let i=0;i<5;i++){const d=addDays(mon,i),c=counts(d);si+=c.si;pa+=c.pa;no+=c.no;tot+=c.tot;
+    const seg=k=>c.tot?(100*c[k]/c.tot):0;
+    strip+='<div class="'+(d===t?'today':'')+'">'+['L','M','X','J','V'][i]+'<b>'+c.si+'/'+c.tot+'</b><div class="bar" aria-hidden="true">'+(c.si?'<i style="width:'+seg('si')+'%;background:var(--acc)"></i>':'')+(c.pa?'<i style="width:'+seg('pa')+'%;background:var(--warn)"></i>':'')+(c.no?'<i style="width:'+seg('no')+'%;background:var(--bad)"></i>':'')+'</div></div>';}
+  let h='<h1 class="h1">Semana</h1>';
+  h+='<div class="tiles"><div class="tile"><span>Cumplidas</span><b>'+si+'<small> de '+tot+'</small></b></div><div class="tile"><span>A medias</span><b>'+pa+'</b></div><div class="tile"><span>Salteadas</span><b>'+no+'</b></div></div>';
+  h+='<section class="card"><div class="eyebrow">Lunes a viernes de esta semana</div><div class="wstrip">'+strip+'</div><div class="legend"><span><i style="background:var(--acc)"></i>Todo</span><span><i style="background:var(--warn)"></i>Parte</span><span><i style="background:var(--bad)"></i>No</span></div></section>';
+  h+='<section class="card"><div class="eyebrow">Horarios</div><table class="tt"><tbody>'
+    +[['5:30','Agua y café'],['6:00','Gym (hasta 7:05)'],['7:50','Desayuno'],['10:30','Media mañana'],['12:30','Almuerzo (tupper)'],['17:00','Merienda'],['20:30','Cena (a las 21 como tarde)'],['22:30','A dormir']].map(r=>'<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>').join('')
+    +'</tbody></table><p class="hint" style="margin-top:10px">Si te levantás a las 5:30, tenés que estar durmiendo a las 22:30. Dormir poco frena la bajada de grasa y hace que la espalda duela más.</p></section>';
+  h+='<div class="sec">El plan completo</div>';
+  h+='<details class="day"><summary>Domingo de noche <span>prep del lunes</span></summary><div class="in">'+PREP.map(p=>'<div class="row"><p><b style="color:var(--ink)">'+p[0]+'</b>'+(p[1]?' — '+p[1]:'')+'</p></div>').join('')+'</div></details>';
+  for(let w=1;w<=5;w++){const D=DIAS[w];
+    h+='<details class="day"'+(wd(t)===w?' open':'')+'><summary>'+D.dow+'<span>'+(D.run?'🏃 corrés':'')+(w===5?'cena libre':'')+'</span></summary><div class="in">'
+      +mealsFor(w).map(m=>'<div class="row"><b>'+m.t+' · '+m.name+'</b><p>'+m.desc+'</p>'+(m.doble?'<small>🍳 Doble: tupper del '+m.doble+'</small>':'')+'</div>').join('')+'</div></details>';}
+  h+='<div class="sec">Fin de semana</div><section class="card"><ul class="rules">'+FINDE.map(r=>'<li>'+r+'</li>').join('')+'</ul></section>';
+  h+='<section class="card"><div class="eyebrow">Opcional</div><p class="hint">Creatina, 3–5 g por día: es barata y ayuda a no perder fuerza mientras estás en déficit.</p></section>';
+  return h;
+}
+function comprasWeek(){const t=todayStr(),w=wd(t);return (w===6||w===0)?addDays(mondayOf(t),7):mondayOf(t);}
+function renderCompras(){
+  const wk=comprasWeek(),ck=S.compras[wk]||{};let tot=0,c=0;COMPRAS.forEach(g=>g[1].forEach((it,i)=>{tot++;if(ck[g[0]+'|'+i])c++;}));
+  const d=pD(wk);
+  let h='<h1 class="h1">Compras</h1><section class="card"><div class="eyebrow">Semana del lunes '+d.getDate()+'/'+(d.getMonth()+1)+'</div><p class="hint">Lo de lunes a viernes, más la prep del domingo. Se desmarca sola cada semana.</p>'
+    +'<div class="meter"><i id="cmtr" style="width:'+(100*c/tot)+'%"></i></div><p class="meterl" id="cmtrl">'+c+' de '+tot+' en el carrito</p></section>';
+  COMPRAS.forEach(g=>{h+='<div class="cgrp">'+g[0]+'</div>'+g[1].map((it,i)=>{const k=g[0]+'|'+i,on=!!ck[k];return '<button class="ck'+(on?' on':'')+'" data-act="cmp" data-k="'+esc(k)+'" aria-pressed="'+on+'"><span class="box" aria-hidden="true"></span><span class="ckt"><b>'+it[0]+'</b><small>'+it[1]+'</small></span></button>';}).join('');});
+  h+='<div class="btnrow"><button class="btn2" data-act="cmpreset">Desmarcar todo</button></div>';
+  return h;
+}
+function rate(){
+  /* ritmo con regresión lineal sobre los pesajes de los últimos 21 días (kg por semana) */
+  const P=S.peso.slice().sort((a,b)=>a.d<b.d?-1:1);if(P.length<2)return null;
+  const last=P[P.length-1].d,cut=addDays(last,-21),Q=P.filter(p=>p.d>=cut);
+  if(Q.length<2||dayNum(Q[Q.length-1].d)-dayNum(Q[0].d)<6)return null;
+  const xs=Q.map(p=>dayNum(p.d)),ys=Q.map(p=>p.kg),mx=xs.reduce((a,b)=>a+b)/xs.length,my=ys.reduce((a,b)=>a+b)/ys.length;
+  let nu=0,de=0;xs.forEach((x,i)=>{nu+=(x-mx)*(ys[i]-my);de+=(x-mx)*(x-mx);});return de?nu/de*7:null;
+}
+function renderPeso(){
+  const P=S.peso.slice().sort((a,b)=>a.d<b.d?-1:1),last=P[P.length-1],first=P[0],r=rate();
+  let h='<h1 class="h1">Peso y cintura</h1>';
+  h+='<section class="card"><div class="eyebrow">Anotar</div><p class="hint">Pesate el <b>viernes en ayunas</b>, antes de la cena libre: el sábado sale inflado por la sal y el agua. '+(P.length?'':'Mañana lunes pesate para tener el punto de partida. ')+'La cintura, con cinta métrica a la altura del ombligo.</p>'
+    +'<div class="form"><label class="full">Fecha<input type="date" id="pd" value="'+todayStr()+'"></label><label>Peso (kg)<input id="pk" inputmode="decimal" placeholder="'+(last?fmtN(last.kg):'77,0')+'" autocomplete="off"></label><label>Cintura (cm)<input id="pc" inputmode="decimal" placeholder="'+(last&&last.cin?fmtN(last.cin):'opcional')+'" autocomplete="off"></label></div>'
+    +'<button class="bigbtn" data-act="addpeso">Guardar</button></section>';
+  if(P.length){
+    const dif=last.kg-first.kg;
+    h+='<div class="tiles"><div class="tile"><span>Último</span><b>'+fmtN(last.kg)+'<small> kg</small></b></div><div class="tile"><span>Desde el inicio</span><b>'+(dif>0?'+':dif<0?'−':'')+fmtN(Math.abs(dif))+'<small> kg</small></b></div><div class="tile"><span>Por semana</span><b>'+(r==null?'—':(r>0?'+':r<0?'−':'')+fmtN(Math.abs(r),2))+'<small>'+(r==null?'':' kg')+'</small></b></div></div>';
+    let adv,cl;
+    if(r==null){cl='n';adv='Con 2 pesajes separados por una semana te calculo el ritmo.';}
+    else{const loss=-r;
+      if(loss<0.25){cl='y';adv='⚠ Casi no estás bajando. Si van 2 semanas así, sacá unas 150–200 kcal: por ejemplo, la mitad del arroz o los fideos de la cena. Antes, revisá el finde.';}
+      else if(loss<0.5){cl='y';adv='Bajando, pero algo lento. Antes de recortar comida, revisá el finde y el alcohol.';}
+      else if(loss<=1){cl='g';adv='✓ Ritmo ideal (0,5–1 kg por semana en las últimas 3 semanas): no toques nada.';}
+      else{cl='r';adv='Muy rápido. Si perdés fuerza o andás muerto, sumá 1 fruta y 1 feta de pan por día.';}
+      if(loss>0){const wks=(dayNum(FIN)-dayNum(last.d))/7;if(wks>0)adv+=' A este ritmo llegás al 31/12 con unos '+fmtN(last.kg-loss*wks)+' kg.';}}
+    h+='<div class="adv '+cl+'">'+adv+'</div>';
+  }
+  h+='<section class="card" style="margin-top:12px"><div class="eyebrow">Peso (kg)</div><p class="hint">La banda es la zona donde, para tu cuerpo, suele empezar a verse el abdomen: 69–71 kg.</p><div class="chart" id="chP"></div></section>';
+  h+='<section class="card"><div class="eyebrow">Cintura (cm)</div><p class="hint">Para tu objetivo es el mejor indicador: puede bajar aunque la balanza no se mueva.</p><div class="chart" id="chC"></div></section>';
+  if(P.length){h+='<section class="card"><div class="eyebrow">Registros</div><table class="hist"><thead><tr><th>Día</th><th>Peso</th><th>Cintura</th><th></th></tr></thead><tbody>'
+    +P.slice().reverse().map(p=>'<tr><td>'+shortD(p.d)+'</td><td>'+fmtN(p.kg)+' kg</td><td>'+(p.cin?fmtN(p.cin)+' cm':'—')+'</td><td><button class="del" data-act="delpeso" data-d="'+p.d+'" aria-label="Borrar el registro del '+shortD(p.d)+'">✕</button></td></tr>').join('')+'</tbody></table></section>';}
+  const f=new Date(S._first);
+  h+='<section class="card"><div class="eyebrow">Tus datos</div><p class="hint">Se guardan solo en este teléfono. Bajá un respaldo cada tanto (por WhatsApp a vos mismo, por ejemplo).</p>'
+    +'<div class="btnrow"><button class="btn2" data-act="export">Bajar respaldo</button><button class="btn2" data-act="import">Cargar respaldo</button></div>'
+    +'<p class="hint" style="margin-top:10px;font-size:12.5px;color:var(--mut)">Guardando desde el '+f.getDate()+'/'+(f.getMonth()+1)+'/'+f.getFullYear()+'. Si esta fecha se resetea sola, el navegador te está borrando los datos.</p></section>';
+  return h;
+}
+function drawPeso(){
+  const P=S.peso.slice().sort((a,b)=>a.d<b.d?-1:1);
+  const a=$('#chP'),b=$('#chC');if(!a)return;
+  lineChart(a,P.map(p=>({x:p.d,y:p.kg})),{color:'var(--c1)',unit:' kg',band:ZONA,bandLabel:'zona objetivo',aria:'Evolución del peso',empty:P.length?'Con un pesaje más ya ves la línea.':'Todavía no hay pesajes.'});
+  const C=P.filter(p=>p.cin);
+  lineChart(b,C.map(p=>({x:p.d,y:p.cin})),{color:'var(--c2)',unit:' cm',aria:'Evolución de la cintura',empty:C.length?'Con una medida más ya ves la línea.':'Todavía no hay medidas de cintura.'});
+}
+
+/* ================= gráfico ================= */
+function niceStep(range){const raw=range/4;const p=Math.pow(10,Math.floor(Math.log10(raw||1)));for(const m of [1,2,2.5,5,10]){if(raw<=m*p)return m*p;}return 10*p;}
+function lineChart(el,pts,o){
+  el.innerHTML='';el.style.setProperty('--c',o.color);
+  if(pts.length<2){el.innerHTML='<p class="empty">'+o.empty+'</p>';return;}
+  const NS='http://www.w3.org/2000/svg',W=Math.max(260,el.clientWidth||320),H=200,m={l:38,r:56,t:14,b:26};
+  const xs=pts.map(p=>pD(p.x).getTime());let x0=xs[0],x1=xs[xs.length-1];if(x1===x0)x1=x0+864e5;
+  let vals=pts.map(p=>p.y);if(o.band)vals=vals.concat(o.band);
+  let lo=Math.min(...vals),hi=Math.max(...vals);if(hi-lo<2){lo-=1;hi+=1;}
+  const st=niceStep(hi-lo);lo=Math.floor(lo/st)*st;hi=Math.ceil(hi/st)*st;
+  const X=t=>m.l+(t-x0)/(x1-x0)*(W-m.l-m.r),Y=v=>m.t+(hi-v)/(hi-lo)*(H-m.t-m.b);
+  const svg=document.createElementNS(NS,'svg');svg.setAttribute('viewBox','0 0 '+W+' '+H);svg.setAttribute('height',H);svg.setAttribute('tabindex','0');svg.setAttribute('role','img');svg.setAttribute('aria-label',o.aria);
+  const mk=(n,a)=>{const e=document.createElementNS(NS,n);for(const k in a)e.setAttribute(k,a[k]);svg.appendChild(e);return e;};
+  for(let v=lo;v<=hi+1e-9;v+=st){const y=Y(v);mk('line',{x1:m.l,x2:W-m.r,y1:y,y2:y,class:'ch-grid'});const tx=mk('text',{x:m.l-6,y:y+4,'text-anchor':'end',class:'ch-tick'});tx.textContent=fmtN(v);}
+  if(o.band){const y1=Y(o.band[1]),y2=Y(o.band[0]);mk('rect',{x:m.l,y:y1,width:W-m.l-m.r,height:y2-y1,class:'ch-band'});const bl=mk('text',{x:m.l+6,y:y1+13,class:'ch-bandl'});bl.textContent=o.bandLabel;}
+  const xl=[0,pts.length-1];if(pts.length>4)xl.splice(1,0,Math.floor((pts.length-1)/2));
+  xl.forEach(i=>{const d=pD(pts[i].x),tx=mk('text',{x:X(xs[i]),y:H-6,'text-anchor':i===0?'start':i===pts.length-1?'end':'middle',class:'ch-tick'});tx.textContent=d.getDate()+'/'+(d.getMonth()+1);});
+  mk('path',{d:pts.map((p,i)=>(i?'L':'M')+X(xs[i]).toFixed(1)+' '+Y(p.y).toFixed(1)).join(' '),class:'ch-line'});
+  pts.forEach((p,i)=>mk('circle',{cx:X(xs[i]),cy:Y(p.y),r:4,class:'ch-dot'}));
+  const lp=pts[pts.length-1],et=mk('text',{x:X(xs[xs.length-1])+8,y:Y(lp.y)+4,class:'ch-end'});et.textContent=fmtN(lp.y)+(o.unit||'');
+  const cx=mk('line',{x1:0,x2:0,y1:m.t,y2:H-m.b,class:'ch-x'});cx.style.display='none';
+  const hd=mk('circle',{r:6,class:'ch-dot'});hd.style.display='none';
+  const ov=mk('rect',{x:m.l-12,y:0,width:W-m.l-m.r+24,height:H,fill:'transparent'});
+  el.appendChild(svg);
+  const tip=document.createElement('div');tip.className='tip';el.appendChild(tip);
+  let cur=-1;
+  function show(i){cur=i;const p=pts[i],x=X(xs[i]),y=Y(p.y);cx.setAttribute('x1',x);cx.setAttribute('x2',x);cx.style.display='';hd.setAttribute('cx',x);hd.setAttribute('cy',y);hd.style.display='';
+    tip.textContent='';const b=document.createElement('b');const k=document.createElement('i');k.className='k';b.appendChild(k);b.appendChild(document.createTextNode(fmtN(p.y)+(o.unit||'')));tip.appendChild(b);
+    const s1=document.createElement('span');s1.textContent=shortD(p.x);tip.appendChild(s1);
+    tip.classList.add('on');const tw=tip.offsetWidth;let left=x-tw/2;left=Math.max(0,Math.min(el.clientWidth-tw,left));tip.style.left=left+'px';let top=y-tip.offsetHeight-12;if(top<0)top=y+14;tip.style.top=top+'px';}
+  function hide(){cur=-1;cx.style.display='none';hd.style.display='none';tip.classList.remove('on');}
+  function near(ev){const r=svg.getBoundingClientRect(),px=(ev.clientX-r.left)*(W/r.width);let bi=0,bd=1e9;xs.forEach((t,i)=>{const d=Math.abs(X(t)-px);if(d<bd){bd=d;bi=i;}});return bi;}
+  ov.addEventListener('pointermove',ev=>show(near(ev)));ov.addEventListener('pointerdown',ev=>show(near(ev)));ov.addEventListener('pointerleave',hide);
+  svg.addEventListener('focus',()=>show(pts.length-1));svg.addEventListener('blur',hide);
+  svg.addEventListener('keydown',ev=>{if(ev.key==='ArrowLeft'){show(Math.max(0,(cur<0?pts.length:cur)-1));ev.preventDefault();}else if(ev.key==='ArrowRight'){show(Math.min(pts.length-1,cur+1));ev.preventDefault();}else if(ev.key==='Escape')hide();});
+}
+
+/* ================= render y eventos ================= */
+function render(){
+  const v=$('#view');
+  v.innerHTML=tab==='hoy'?renderHoy():tab==='semana'?renderSemana():tab==='compras'?renderCompras():renderPeso();
+  v.classList.remove('view');void v.offsetWidth;v.classList.add('view');
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.t===tab));
+  if(tab==='peso')drawPeso();
+}
+document.addEventListener('click',ev=>{
+  const b=ev.target.closest('[data-act]');if(!b)return;const a=b.dataset.act;
+  if(a==='tab'){tab=b.dataset.t;render();window.scrollTo(0,0);return;}
+  if(a==='prev'||a==='next'){sel=addDays(sel,a==='prev'?-1:1);render();return;}
+  if(a==='today'){sel=todayStr();render();return;}
+  if(a==='st'){const card=b.closest('.meal'),id=card.dataset.m,x=day(sel),k=b.dataset.k;x.m[id]=(x.m[id]===k)?null:k;if(!x.m[id])delete x.m[id];save();
+    const y=window.scrollY;render();window.scrollTo(0,y);return;}
+  if(a==='agua'){const x=day(sel),n=+b.dataset.n;x.agua=(x.agua===n)?n-1:n;save();
+    document.querySelectorAll('.agua button').forEach(z=>{const on=+z.dataset.n<=x.agua;z.classList.toggle('on',on);z.setAttribute('aria-pressed',on);});$('#aguaL').textContent=fmtN(x.agua/2)+' de 3 L';
+    if(x.agua===6)toast('3 litros ✓ ¡Bien ahí!');return;}
+  if(a==='prep'){const x=day(sel),i=b.dataset.i;x.prep[i]=!x.prep[i];b.classList.toggle('on',x.prep[i]);b.setAttribute('aria-pressed',x.prep[i]);save();return;}
+  if(a==='cmp'){const wk=comprasWeek(),ck=S.compras[wk]=S.compras[wk]||{},k=b.dataset.k;ck[k]=!ck[k];b.classList.toggle('on',ck[k]);b.setAttribute('aria-pressed',ck[k]);
+    Object.keys(S.compras).forEach(w=>{if(w<addDays(wk,-28))delete S.compras[w];});save();
+    let tot=0,c=0;COMPRAS.forEach(g=>g[1].forEach((it,i)=>{tot++;if(ck[g[0]+'|'+i])c++;}));$('#cmtr').style.width=(100*c/tot)+'%';$('#cmtrl').textContent=c+' de '+tot+' en el carrito';return;}
+  if(a==='cmpreset'){S.compras[comprasWeek()]={};save();render();return;}
+  if(a==='addpeso'){const d=$('#pd').value,kg=num($('#pk').value),cin=num($('#pc').value);
+    if(!d){toast('Elegí la fecha');return;}
+    if(kg==null||kg<35||kg>200){toast('Anotá el peso en kg');$('#pk').focus();return;}
+    if(cin!=null&&(cin<40||cin>200)){toast('La cintura va en cm');$('#pc').focus();return;}
+    S.peso=S.peso.filter(p=>p.d!==d);S.peso.push({d:d,kg:kg,cin:cin});save();render();toast('Guardado ✓');return;}
+  if(a==='delpeso'){if(!confirm('¿Borrar el registro del '+shortD(b.dataset.d)+'?'))return;S.peso=S.peso.filter(p=>p.d!==b.dataset.d);save();render();return;}
+  if(a==='export'){exportJSON();return;}
+  if(a==='import'){$('#imp').click();return;}
+});
+document.addEventListener('input',ev=>{const t=ev.target;if(t.classList.contains('mnote')){day(sel).n[t.dataset.m]=t.value;saveSoon();}});
+$('#imp').addEventListener('change',ev=>{const f=ev.target.files[0];if(f)importJSON(f);ev.target.value='';});
+let rzT=null;window.addEventListener('resize',()=>{clearTimeout(rzT);rzT=setTimeout(()=>{if(tab==='peso')drawPeso();},150);});
+let openedOn=todayStr();
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible'&&todayStr()!==openedOn){openedOn=todayStr();sel=openedOn;render();}});
+function exportJSON(){
+  const data=JSON.stringify(S),name='comidas-respaldo-'+todayStr()+'.json';
+  try{const f=new File([data],name,{type:'application/json'});if(navigator.canShare&&navigator.canShare({files:[f]})){navigator.share({files:[f],title:'Respaldo comidas'}).catch(()=>{});return;}}catch(e){}
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([data],{type:'application/json'}));a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);
+}
+function importJSON(file){
+  const rd=new FileReader();
+  rd.onload=()=>{try{const o=JSON.parse(rd.result);if(!o||typeof o!=='object'||!o.dias)throw 0;
+      if(!confirm('¿Reemplazar los datos de este teléfono por los del respaldo?'))return;
+      S=o;norm();save();render();toast('Respaldo cargado ✓');}catch(e){toast('⚠ Ese archivo no es un respaldo de comidas');}};
+  rd.readAsText(file);
+}
+if('serviceWorker' in navigator&&location.protocol==='https:')navigator.serviceWorker.register('sw.js').catch(()=>{});
+render();
+</script>
+</body>
+</html>
