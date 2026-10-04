@@ -247,22 +247,22 @@ const MER_B='Leche descremada con cocoa + 3 galletas de arroz con mermelada + 1 
 const DIAS={
   1:{dow:'Lunes',
     alm:['Arroz (80 g en crudo) + 1 lata de atún al natural + 1 huevo duro + 1 cucharadita de aceite.','🥡 Lo armaste el domingo'],
-    cena:{t:'Milanesas de pollo al horno (180 g en crudo por porción) + papas al horno en cubos (250 g por porción, con 1 cucharadita de aceite y pimentón) + ensalada. Todo en la misma bandeja.',doble:'martes',
+    cena:{t:'Milanesas de pollo al horno (180 g en crudo por porción) + papas al horno en cubos (250 g por porción, con 1 cucharadita de aceite y pimentón). Todo en la misma bandeja.',doble:'martes',
       rec:'Pechuga en fetas finas, pasala por huevo batido y pan rallado. Horno fuerte (200 °C) 20–25 min, dándolas vuelta a la mitad. Las papas van en la misma bandeja.'}},
   2:{dow:'Martes',run:true,
-    alm:['Milanesa de pollo + papas al horno + ensalada.','🥡 De la cena del lunes'],
-    cena:{t:'Hamburguesas caseras: comés 2 y guardás 2. Con 70 g de arroz en crudo por porción (cociná 140 g), o 1 pan de hamburguesa por hamburguesa en vez del arroz. Más ensalada.',doble:'miércoles',
+    alm:['Milanesa de pollo + papas al horno.','🥡 De la cena del lunes'],
+    cena:{t:'Hamburguesas caseras: comés 2 y guardás 2. Con 70 g de arroz en crudo por porción (cociná 140 g), o 1 pan de hamburguesa por hamburguesa en vez del arroz.',doble:'miércoles',
       rec:'400 g de carne picada magra + 30 g de pan rallado + 1 huevo + sal, pimienta y orégano. Salen 4 iguales (unos 110 g cada una). A la plancha o al horno, sin aceite extra.'}},
   3:{dow:'Miércoles',
-    alm:['2 hamburguesas caseras + arroz (o pan) + ensalada.','🥡 De la cena del martes'],
+    alm:['2 hamburguesas caseras + arroz (o pan).','🥡 De la cena del martes'],
     cena:{t:'Nuggets caseros de pollo al horno (200 g de pechuga en crudo por porción) + boniato al horno (250 g por porción).',doble:'jueves',
       rec:'Pechuga en cubos, por huevo batido y pan rallado (con pimentón y ajo en polvo si querés). Horno a 200 °C unos 20 min, dándolos vuelta. Son como los nuggets que te gustan, pero con mucha más proteína.'}},
   4:{dow:'Jueves',run:true,
     alm:['Nuggets caseros + boniato al horno.','🥡 De la cena del miércoles'],
-    cena:{t:'Fideos con boloñesa magra: 80 g de fideos en crudo + 120 g de carne picada por porción, salsa de tomate y 10 g de queso rallado (cociná 160 g de fideos y 240 g de carne).',doble:'viernes',
-      rec:'Dorá la carne picada sin aceite, sumá la salsa de tomate y dejala 10 min a fuego bajo. Los fideos, aparte. El queso guardalo aparte para el tupper.'}},
+    cena:{t:'Fideos con pollo en salsa de queso: 80 g de fideos en crudo + 120 g de pechuga en cubos por porción, con una salsa de 40 g de queso untable light y un chorrito de leche, y 10 g de queso rallado arriba (cociná 160 g de fideos y 240 g de pechuga).',doble:'viernes',
+      rec:'Pechuga en cubos a la plancha o en sartén, sin aceite, hasta que dore. Aparte, a fuego bajo, 80 g de queso untable light con un chorrito de leche, revolviendo hasta que quede cremoso. Mezclá todo con los fideos. El queso rallado guardalo aparte para el tupper.'}},
   5:{dow:'Viernes',
-    alm:['Fideos con boloñesa.','🥡 De la cena del jueves'],
+    alm:['Fideos con pollo en salsa de queso.','🥡 De la cena del jueves'],
     cena:{libre:true,t:'Cena libre. Disfrutala: es una comida, no el arranque de un finde libre.'}}
 };
 function mealsFor(w){
@@ -270,7 +270,7 @@ function mealsFor(w){
   return [
     {id:'des',t:'7:50',name:'Desayuno',desc:run?DES_B:DES_A,tag:'⏱ Rápido, después de la ducha'},
     {id:'mm',t:'10:30',name:'Media mañana',desc:MM},
-    {id:'alm',t:'12:30',name:'Almuerzo',desc:d.alm[0],tag:d.alm[1]},
+    {id:'alm',t:'12:30',name:'Almuerzo',desc:d.alm[0]+' De postre, 1 fruta.',tag:d.alm[1]},
     {id:'mer',t:'17:00',name:'Merienda',desc:run?MER_B:MER_A,tag:run?'🏃 Hoy corrés después':null},
     {id:'cena',t:'20:30',name:'Cena',desc:d.cena.t,doble:d.cena.doble,rec:d.cena.rec,libre:!!d.cena.libre}
   ];
@@ -289,8 +289,8 @@ const FINDE=[
 ];
 const COMPRAS=[
   ['Carnes y huevos',[
-    ['Pechuga de pollo','800 g (milanesas y nuggets)'],
-    ['Carne picada magra','650 g (hamburguesas y boloñesa)'],
+    ['Pechuga de pollo','1 kg (milanesas, nuggets y fideos del jueves)'],
+    ['Carne picada magra','400 g (hamburguesas)'],
     ['Huevos','15 (una docena y media)'],
     ['Atún al natural','1 lata'],
     ['Jamón en fetas','250 g'],
@@ -298,7 +298,7 @@ const COMPRAS=[
   ['Lácteos',[
     ['Leche descremada','3 L'],
     ['Yogur descremado','5 unidades'],
-    ['Queso untable light','1 pote'],
+    ['Queso untable light','1 pote grande o 2 chicos'],
     ['Queso rallado','1 sobre chico']]],
   ['Almacén',[
     ['Pan lactal','1 paquete grande'],
@@ -306,16 +306,14 @@ const COMPRAS=[
     ['Pan rallado','1 paquete'],
     ['Arroz','si no te queda (usás 220 g)'],
     ['Fideos','si no te quedan (usás 160 g)'],
-    ['Salsa de tomate','1 caja'],
     ['Cocoa y azúcar','si se terminan'],
     ['Mermelada','1 frasco, si se termina'],
     ['Pan de hamburguesa','4, opcional (en vez del arroz del martes)']]],
-  ['Frutas y verduras',[
+  ['Frutas y papas',[
     ['Bananas','5–6'],
-    ['Fruta para la media mañana','5 (manzana, mandarina, pera…)'],
+    ['Fruta para media mañana y postre','10 (manzana, mandarina, pera…)'],
     ['Papas','600 g'],
-    ['Boniatos','600 g'],
-    ['Lechuga (o la verdura que te guste)','para la ensalada']]]
+    ['Boniatos','600 g']]]
 ];
 const ZONA=[69,71];
 
@@ -393,7 +391,7 @@ function renderHoy(){
       +'<div class="meter"><i id="mtr" style="width:'+(100*c.si/c.tot)+'%"></i></div><p class="meterl" id="mtrl">'+c.si+' de '+c.tot+' comidas cumplidas</p></section>';
     h+='<div class="note"><b>5:30 · Antes del gym.</b> '+PRE+'</div>';
     h+=ms.map(m=>mealCard(m,x.m||{},x.n||{})).join('');
-    h+='<div class="note"><b>La ensalada</b> es lechuga o la verdura que te guste, con 1 cucharadita de aceite. Si no querés verdura, sumá una fruta en el día.</div>';
+    h+='<div class="note"><b>Como no comés verdura</b>, la fruta hace ese trabajo: la de la media mañana y la de postre del almuerzo, todos los días.</div>';
     h+='<div class="note"><b>Libres todo el día:</b> agua, mate y café sin azúcar, edulcorante.</div>';
     h+=aguaBlock();
   }else{
@@ -423,7 +421,7 @@ function renderSemana(){
     h+='<details class="day"'+(wd(t)===w?' open':'')+'><summary>'+D.dow+'<span>'+(D.run?'🏃 corrés':'')+(w===5?'cena libre':'')+'</span></summary><div class="in">'
       +mealsFor(w).map(m=>'<div class="row"><b>'+m.t+' · '+m.name+'</b><p>'+m.desc+'</p>'+(m.doble?'<small>🍳 Doble: tupper del '+m.doble+'</small>':'')+'</div>').join('')+'</div></details>';}
   h+='<div class="sec">Fin de semana</div><section class="card"><ul class="rules">'+FINDE.map(r=>'<li>'+r+'</li>').join('')+'</ul></section>';
-  h+='<section class="card"><div class="eyebrow">Opcional</div><p class="hint">Creatina, 3–5 g por día: es barata y ayuda a no perder fuerza mientras estás en déficit.</p></section>';
+  h+='<section class="card"><div class="eyebrow">Opcional</div><p class="hint">Creatina, 3–5 g por día: es barata y ayuda a no perder fuerza mientras estás en déficit.</p><p class="hint" style="margin-top:8px">Como no comés verdura, un multivitamínico común de farmacia no está de más.</p></section>';
   return h;
 }
 function comprasWeek(){const t=todayStr(),w=wd(t);return (w===6||w===0)?addDays(mondayOf(t),7):mondayOf(t);}
