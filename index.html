@@ -424,7 +424,7 @@ function renderSemana(){
     h+='<details class="day"'+(wd(t)===w?' open':'')+'><summary>'+D.dow+'<span>'+(D.run?'🏃 corrés':'')+(w===5?'cena libre':'')+'</span></summary><div class="in">'
       +mealsFor(w).map(m=>'<div class="row"><b>'+m.t+' · '+m.name+'</b><p>'+m.desc+'</p>'+(m.doble?'<small>🍳 Doble: tupper del '+m.doble+'</small>':'')+'</div>').join('')+'</div></details>';}
   h+='<div class="sec">Fin de semana</div><section class="card"><ul class="rules">'+FINDE.map(r=>'<li>'+r+'</li>').join('')+'</ul></section>';
-  h+='<section class="card"><div class="eyebrow">Opcional</div><p class="hint">Creatina, 3–5 g por día: es barata y ayuda a no perder fuerza mientras estás en déficit.</p><p class="hint" style="margin-top:8px">Como no comés verdura, un multivitamínico común de farmacia no está de más.</p></section>';
+  h+='<section class="card"><div class="eyebrow">Opcional</div><p class="hint">Creatina monohidrato, 3–5 g por día, todos los días (también el finde), con el desayuno: ayuda a no perder fuerza mientras estás en déficit.</p><p class="hint" style="margin-top:8px">Como no comés verdura, un multivitamínico común de farmacia no está de más.</p></section>';
   return h;
 }
 function comprasWeek(){const t=todayStr(),w=wd(t);return (w===6||w===0)?addDays(mondayOf(t),7):mondayOf(t);}
@@ -448,7 +448,7 @@ function rate(){
 function renderPeso(){
   const P=S.peso.slice().sort((a,b)=>a.d<b.d?-1:1),last=P[P.length-1],first=P[0],r=rate();
   let h='<h1 class="h1">Peso y cintura</h1>';
-  h+='<section class="card"><div class="eyebrow">Anotar</div><p class="hint">Pesate el <b>viernes en ayunas</b>, antes de la cena libre: el sábado sale inflado por la sal y el agua. '+(P.length?'':'Mañana lunes pesate para tener el punto de partida. ')+'La cintura, con cinta métrica a la altura del ombligo.</p>'
+  h+='<section class="card"><div class="eyebrow">Anotar</div><p class="hint">Pesate el <b>viernes en ayunas</b>, antes de la cena libre: el sábado sale inflado por la sal y el agua. '+(P.length?'':'Mañana lunes pesate para tener el punto de partida. ')+'La cintura, con cinta métrica a la altura del ombligo.</p><p class="hint" style="margin-top:8px"><b>Si arrancás creatina:</b> las primeras 3 semanas la balanza puede subir 1–2 kg de agua dentro del músculo. No es grasa. Esas semanas guiate por la cintura y no recortes comida por la balanza.</p>'
     +'<div class="form"><label class="full">Fecha<input type="date" id="pd" value="'+todayStr()+'"></label><label>Peso (kg)<input id="pk" inputmode="decimal" placeholder="'+(last?fmtN(last.kg):'77,0')+'" autocomplete="off"></label><label>Cintura (cm)<input id="pc" inputmode="decimal" placeholder="'+(last&&last.cin?fmtN(last.cin):'opcional')+'" autocomplete="off"></label></div>'
     +'<button class="bigbtn" data-act="addpeso">Guardar</button></section>';
   if(P.length){
